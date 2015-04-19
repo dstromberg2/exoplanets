@@ -17,7 +17,6 @@
 
   ga('create', 'UA-61956886-1', 'auto');
   ga('send', 'pageview');
-
 </script>
 	</head>
 	<body>
@@ -39,9 +38,9 @@
 
 		<div id="clonefill" class="planet-wrap col-xs-4 col-sm-2">
 			<a tabindex="0" class="planet-popover" data-toggle="popover" data-container="body" data-placement="top" data-html="true" data-trigger="focus" title="" data-content="">
-			<div class="planet-display">
-				<div class="planet-name"></div>
-			</div>
+				<div class="planet-display">
+					<div class="planet-name"></div>
+				</div>
 			</a>
 		</div>
 
@@ -50,22 +49,25 @@
 		<script>
 			$(document).ready(function() {
 				var largestradii = 2.5 // Hardcoding this value to determine percentages
+				
+				// Using bootstrap's window size to determine how many planets per row
 				if($(window).width() < 768) var rowlength = 3;
 				else var rowlength = 6;
+
 				$.ajax({
 					url: 'exoplanets.json'
 				}).done(function(data) {
 					var cnt = 0;
 					var fullsize = $('#clonefill').width();
 					$.each(data, function(i, v) {
-						//if(cnt == 10) return false;
 						if(v.radius !== null) {
-							
+							// Check if the row is full, and add a new one
 							if(cnt % rowlength == 0) {
 								$('#pfill').removeAttr('id');
 								$('#planet-container').append('<div id="pfill" class="row"></div>');
 							}
 							
+							// Create the new planet's div
 							newplanet = $('#clonefill').clone();
 							newplanet.removeAttr('id');
 							if(v.star_name == 'Sun') newplanet.addClass('solarsystem');
@@ -73,11 +75,13 @@
 							pover = newplanet.find('.planet-popover');
 							pname = pdisp.find('.planet-name');
 
+							// The display size computed here
 							size = Math.round((v.radius/largestradii) * fullsize);
 							pdisp.height(size).width(size);
 							pdisp.css('border-radius', size);
 							if(size > 65) pname.css('line-height', size+'px').text(v['# name']);
 							
+							// Set all of the text for the popover
 							pover.attr('title', v['# name']);
 							link = 'http://exoplanet.eu/catalog/'+v['# name'].toLowerCase().replace(' ', '_')+'/';
 							contenttext = 'Radius: '+v.radius;
