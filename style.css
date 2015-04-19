@@ -1,0 +1,56 @@
+
+body {
+	background-color: #222;
+	color: #ddd;
+}
+
+.headtext {
+	text-align: center;
+	font-size: 8pt;
+}
+
+#clonefill {
+	display: none;
+}
+
+#planet-container .row {
+	margin-bottom: 5px;
+}
+
+.planet-wrap {
+	text-align: center;
+}
+
+.planet-display {
+	background-color: #888;
+	margin: 0 auto;
+	cursor: pointer;
+}
+
+.planet-display:focus {
+	outline: none;
+}
+
+.planet-display:hover {
+	background-color: #555;
+}
+
+.planet-popover:focus {
+	outline: none;
+}
+
+.planet-name {
+	color: #eee;
+}
+
+.popover {
+	color: #666;
+}
+
+.solarsystem .planet-display {
+	background-color: #FAF372;
+}
+
+.solarsystem .planet-display .planet-name {
+	color: #888;
+}

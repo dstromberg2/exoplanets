@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Relative Sizes of Known Exoplanets</title>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12 headtext">
+					<h2>Relative Sizes of Known Exoplanets with Measured Radii<br>Interactive Version</h2>
+					<span>All data sourced from <a href="http://exoplanet.eu/">exoplanet.eu</a>.</span><br>
+					<span>Inspired by <a href="https://twitter.com/alex_parker">@Alex_Parker</a>.</span><br>
+					<span>Contact <a href="https://twitter.com/dstromberg2">@dstromberg2</a> for errors or suggestions.</span>
+				</div>
+			</div>
+			<div class="row">&nbsp;</div>
+		</div>
+
+		<div id="planet-container" class="container-fluid">
+			<div id="pfill" class="row"></div>
+		</div>
+
+		<div id="clonefill" class="planet-wrap col-xs-4 col-sm-2">
+			<a tabindex="0" class="planet-popover" data-toggle="popover" data-container="body" data-placement="top" data-html="true" data-trigger="focus" title="" data-content="">
+			<div class="planet-display">
+				<div class="planet-name"></div>
+			</div>
+			</a>
+		</div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				var largestradii = 2.5 // Hardcoding this value to determine percentages
+				if($(window).width() < 768) var rowlength = 3;
+				else var rowlength = 6;
+				$.ajax({
+					url: 'exoplanets.json'
+				}).done(function(data) {
+					var cnt = 0;
+					var fullsize = $('#clonefill').width();
+					$.each(data, function(i, v) {
+						//if(cnt == 10) return false;
+						if(v.radius !== null) {
+							
+							if(cnt % rowlength == 0) {
+								$('#pfill').removeAttr('id');
+								$('#planet-container').append('<div id="pfill" class="row"></div>');
+							}
+							
+							newplanet = $('#clonefill').clone();
+							newplanet.removeAttr('id');
+							if(v.star_name == 'Sun') newplanet.addClass('solarsystem');
+							pdisp = newplanet.find('.planet-display');
+							pover = newplanet.find('.planet-popover');
+							pname = pdisp.find('.planet-name');
+
+							size = Math.round((v.radius/largestradii) * fullsize);
+							pdisp.height(size).width(size);
+							pdisp.css('border-radius', size);
+							if(size > 65) pname.css('line-height', size+'px').text(v['# name']);
+							
+							pover.attr('title', v['# name']);
+							link = 'http://exoplanet.eu/catalog/'+v['# name'].toLowerCase().replace(' ', '_')+'/';
+							contenttext = 'Radius: '+v.radius;
+							if(v.radius !== null) contenttext += ' R<sub>J</sub>';
+							contenttext += '<br>Mass: '+v.mass;
+							if(v.mass !== null) contenttext +=' M<sub>J</sub>';
+							contenttext += '<br>Star: '+v.star_name;
+							if(v.star_name != 'Sun') {
+								contenttext += '<br>Discovered: '+v.discovered;
+								contenttext += '<br><a href="'+link+'" target="_blank">More Info</a>';
+							}
+							pover.data('content', contenttext);
+
+							$('#pfill').append(newplanet);
+							cnt++;				
+						}
+					});
+
+					// Activate all the popovers after they are on the page
+					$('.planet-popover').popover();
+				});
+			});
+		</script>
+	</body>
+</html>
